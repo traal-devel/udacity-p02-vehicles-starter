@@ -9,9 +9,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Implements the pricing service to get prices for each vehicle.
  */
+@Service
 public class PricingService {
 
   
@@ -22,7 +25,7 @@ public class PricingService {
   private static final Map<Long, Price> PRICES = 
       LongStream
       .range(1, 20)
-      .mapToObj(i -> new Price("USD", randomPrice(), i))
+      .mapToObj(i -> new Price("USD", PricingService.randomPrice(), i))
       .collect(Collectors.toMap(Price::getVehicleId, p -> p));
   
   
@@ -41,7 +44,7 @@ public class PricingService {
    * @return price of the requested vehicle
    * @throws PriceException vehicleID was not found
    */
-  public static Price getPrice(Long vehicleId) throws PriceException {
+  public Price getPrice(Long vehicleId) throws PriceException {
 
     if (!PRICES.containsKey(vehicleId)) {
       throw new PriceException("Cannot find price for Vehicle " + vehicleId);
