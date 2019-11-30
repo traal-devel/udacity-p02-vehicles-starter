@@ -3,7 +3,10 @@ package ch.traal.pricing.api;
 import ch.traal.pricing.domain.price.Price;
 import ch.traal.pricing.service.PriceException;
 import ch.traal.pricing.service.PricingService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +22,8 @@ public class PricingController {
 
   
   /* member variables */
+  @Autowired
+  private PricingService pricingService;
   
   
   /* constructors */
@@ -30,12 +35,13 @@ public class PricingController {
    * @param vehicleId ID number of the vehicle for which the price is requested
    * @return price of the vehicle, or error that it was not found.
    */
-  @GetMapping
-  public Price get(
+  @GetMapping()
+  public ResponseEntity<Price> get(
       @RequestParam Long vehicleId
   ) {
     try {
-        return PricingService.getPrice(vehicleId);
+      Price price = pricingService.getPrice(vehicleId);
+      return ResponseEntity.ok(price);
     } catch (PriceException ex) {
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Price Not Found", ex);
