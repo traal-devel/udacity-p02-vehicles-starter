@@ -2,15 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.10.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+  <parent>
+    <groupId>ch.traal.msa.vehicles</groupId>
+    <artifactId>vehicles-msa</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
 	<groupId>ch.traal.udacity-p02-vehicle</groupId>
 	<artifactId>vehicles-eureka-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>vehicles-eureka-server</name>
 	<description>Lab Micro Service Architecture</description>
 
