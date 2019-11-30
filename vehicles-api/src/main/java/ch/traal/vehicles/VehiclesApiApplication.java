@@ -26,6 +26,9 @@ public class VehiclesApiApplication {
   
   
   /* constructors */
+  public VehiclesApiApplication() {
+    super();
+  }
   
   
   /* methods */
