@@ -1,6 +1,7 @@
 package ch.traal.vehicles;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ch.traal.vehicles.client.maps.MapsClient;
+import ch.traal.vehicles.client.prices.PriceClient;
 import ch.traal.vehicles.domain.manufacturer.Manufacturer;
 import ch.traal.vehicles.domain.manufacturer.ManufacturerRepository;
 
@@ -64,7 +67,7 @@ public class VehiclesApiApplication {
    * @param endpoint where to communicate for the maps API
    * @return created maps endpoint
    */
-  @Bean(name = "maps")
+  @Bean(name = MapsClient.WEBCLIENT_MAPS)
   public WebClient webClientMaps(
       @Value("${maps.endpoint}") String endpoint
   ) {
@@ -77,7 +80,7 @@ public class VehiclesApiApplication {
    * @param endpoint where to communicate for the pricing API
    * @return created pricing endpoint
    */
-  @Bean(name = "pricing")
+  @Bean(name = PriceClient.WEBCLIENT_PRICING)
   public WebClient webClientPricing(
       @Value("${pricing.endpoint}") String endpoint
   ) {

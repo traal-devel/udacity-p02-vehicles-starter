@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,6 +19,7 @@ public class MapsClient {
 
   
   /* constants */
+  public static final String WEBCLIENT_MAPS = "maps";
   private static final Logger log = LoggerFactory.getLogger(MapsClient.class);
 
   
@@ -28,7 +30,7 @@ public class MapsClient {
   
   /* constuctors */
   public MapsClient(
-      WebClient maps,
+      @Qualifier(MapsClient.WEBCLIENT_MAPS) WebClient maps,
       ModelMapper mapper
   ) {
     this.client = maps;
@@ -38,6 +40,7 @@ public class MapsClient {
   /* methods */
   /**
    * Gets an address from the Maps client, given latitude and longitude.
+   * 
    * @param location An object containing "lat" and "lon" of location
    * @return An updated location including street, city, state and zip,
    *   or an exception message noting the Maps service is down
@@ -46,7 +49,8 @@ public class MapsClient {
     try {
       Address address = client
               .get()
-              .uri(uriBuilder -> uriBuilder
+              .uri(uriBuilder -> 
+                    uriBuilder
                       .path("/maps/")
                       .queryParam("lat", location.getLat())
                       .queryParam("lon", location.getLon())

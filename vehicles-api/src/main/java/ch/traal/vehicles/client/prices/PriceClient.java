@@ -2,6 +2,7 @@ package ch.traal.vehicles.client.prices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,6 +14,8 @@ public class PriceClient {
 
   
   /* constants */
+  public static final String WEBCLIENT_PRICING = "pricing";
+  
   private static final Logger log = LoggerFactory.getLogger(PriceClient.class);
 
   
@@ -21,8 +24,18 @@ public class PriceClient {
 
   
   /* constructors */
-  public PriceClient(WebClient pricing) {
-      this.client = pricing;
+  /**
+   * Constructor for PriceClient.
+   * 
+   * @param pricing {@link WebClient} - Injected by spring.
+   */
+  public PriceClient(
+      @Qualifier(PriceClient.WEBCLIENT_PRICING) WebClient pricing               
+  ) {
+    // jok, @Qualifier actual not necessary, because parameter name equals name, 
+    // but let be explicit in case of someone would change the bean name in 
+    // VehiclesApiApplication
+    this.client = pricing;
   }
 
   
