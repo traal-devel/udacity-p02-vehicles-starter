@@ -32,6 +32,7 @@ public class PricingController {
   /* methods */
   /**
    * Gets the price for a requested vehicle.
+   * 
    * @param vehicleId ID number of the vehicle for which the price is requested
    * @return price of the vehicle, or error that it was not found.
    */
