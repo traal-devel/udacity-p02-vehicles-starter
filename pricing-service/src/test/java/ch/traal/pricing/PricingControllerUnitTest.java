@@ -50,13 +50,19 @@ public class PricingControllerUnitTest {
   
   @Test
   public void getPriceForVehicleId_1_List() throws Exception {
+    Long vehicleId = 1L;
+    
     this.mockMvc.perform(
-                  get("/services/price?vehicleId=1")
+                  get("/services/price")
+                    .param("vehicleId", Long.toString(vehicleId))
                 )
                 .andExpect(status().isOk())
 //                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{}"));
-    verify(pricingService, times(1)).getPrice(1L);
+//                .andExpect(content().json("{}"))
+                ;
+    // :INFO: Verify method checks if in the pricingService the methods was 
+    //        invoked once with the value of the variable vehiclieID
+    verify(pricingService, times(1)).getPrice(vehicleId);
   }
 
 }
