@@ -54,8 +54,9 @@ public class CarService {
 
   /**
    * Gets car information by ID (or throws exception if non-existent)
-   * @param id the ID number of the car to gather information on
-   * @return the requested car's information, including location and price
+   * 
+   * @param id - The ID number of the car to gather information on
+   * @return The requested car's information, including location and price
    */
   public Car findById(Long id) {
     
@@ -92,7 +93,7 @@ public class CarService {
      * meaning the Maps service needs to be called each time for the address.
      */
     Location carLocation = car.getLocation();
-    Location mapLocation =this.webClientMaps.getAddress(carLocation);
+    Location mapLocation = this.webClientMaps.getAddress(carLocation);
     car.setLocation(mapLocation);
 
     return car;
