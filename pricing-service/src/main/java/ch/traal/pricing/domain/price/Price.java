@@ -2,6 +2,7 @@ package ch.traal.pricing.domain.price;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +22,9 @@ public class Price {
   
   private String currency;
   private BigDecimal price;
+  
+  // :INFO: vehicleID has to be unique.
+  @Column(unique=true)
   private Long vehicleId;
 
   
@@ -31,10 +35,16 @@ public class Price {
 
   
   /* methods */
-  public Price(String currency, BigDecimal price, Long vehicleId) {
+  public Price(
+      String currency, 
+      BigDecimal price, 
+      Long vehicleId
+  ) {
+    
     this.currency = currency;
     this.price = price;
     this.vehicleId = vehicleId;
+    
   }
 
   public String getCurrency() {
