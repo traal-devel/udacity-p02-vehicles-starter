@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +24,7 @@ import ch.traal.pricing.domain.price.Price;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@Import(PriceConfig.class)
 public class PricingControllerIntegrationTest {
 
   
@@ -78,5 +80,7 @@ public class PricingControllerIntegrationTest {
     assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
     assertNotNull(response.getBody());
   }
+  
+  
 
 }
