@@ -38,19 +38,12 @@ import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.ResultMatcher;
 
 import ch.traal.vehicles.client.maps.MapsClient;
 import ch.traal.vehicles.client.prices.PriceClient;
-import ch.traal.vehicles.domain.Condition;
-import ch.traal.vehicles.domain.Location;
 import ch.traal.vehicles.domain.car.Car;
-import ch.traal.vehicles.domain.car.Details;
-import ch.traal.vehicles.domain.manufacturer.Manufacturer;
 import ch.traal.vehicles.service.CarService;
+import ch.traal.vehicles.test.util.DomainUtil;
 
 /**
  * Implements testing of the CarController class.
@@ -75,11 +68,12 @@ public class CarControllerTest {
   @MockBean
   private CarService carService;
 
-  @MockBean
-  private PriceClient priceClient;
-
-  @MockBean
-  private MapsClient mapsClient;
+  // jok, Test with WebClients are done in the class CarServiceTest
+//  @MockBean
+//  private PriceClient priceClient;
+//
+//  @MockBean
+//  private MapsClient mapsClient;
   
   @LocalServerPort
   private int port;
@@ -97,8 +91,7 @@ public class CarControllerTest {
    */
   @Before
   public void setup() {
-    Car car = getCar();
-    car.setId(1L);
+    Car car = DomainUtil.createCar(1L);
     
     given(carService.save(any())).willReturn(car);
     given(carService.findById(any())).willReturn(car);
@@ -113,7 +106,7 @@ public class CarControllerTest {
    */
   @Test
   public void createCar() throws Exception {
-    Car car = getCar();
+    Car car = DomainUtil.createCar(1L);
     mvc.perform(
             post(new URI("/cars"))
               .content(json.write(car).getJson())
@@ -134,7 +127,7 @@ public class CarControllerTest {
      *   the whole list of vehicles. This should utilize the car from `getCar()`
      *   below (the vehicle will be the first in the list).
      */
-    Car car = this.getCar();
+    Car car = DomainUtil.createCar(1L);
     this.mvc.perform(
           get(new URI("/cars"))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -170,7 +163,7 @@ public class CarControllerTest {
    */
   @Test
   public void listCarsUsingTraverson() throws Exception {
-    Car carDummy = this.getCar();
+    Car carDummy = DomainUtil.createCar(1L);
     TypeReferences.ResourcesType<Resource<Car>> resourceParameterizedTypeReference =
            new TypeReferences.ResourcesType<Resource<Car>>(){};
 
@@ -202,7 +195,7 @@ public class CarControllerTest {
      * :DONE: Add a test to check that the `get` method works by calling
      *   a vehicle by ID. This should utilize the car from `getCar()` below.
      */
-    Car car = this.getCar();
+    Car car = DomainUtil.createCar(1L);
     this.mvc.perform(
               get(new URI("/cars/" + car.getId()))
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -226,41 +219,12 @@ public class CarControllerTest {
      *   when the `delete` method is called from the Car Controller. This
      *   should utilize the car from `getCar()` below.
      */
-    Car car = this.getCar();
+    Car car = DomainUtil.createCar(1L);
     this.mvc.perform(
                 delete(new URI("/cars/" + car.getId()))
             )
             .andExpect(status().isNoContent());
-    // Else an error would be thrown.
+    // Otherwise an error would be thrown.
   }
 
-  /**
-   * Creates an example Car object for use in testing.
-   * 
-   * @return an example Car object
-   */
-  private Car getCar() {
-    
-    Car car = new Car();
-    car.setId(1L);
-    car.setLocation(new Location(40.730610, -73.935242));
-    car.setCondition(Condition.USED);
-    Details details = new Details();
-    details.setModel("Impala");
-    details.setMileage(32280);
-    details.setExternalColor("white");
-    details.setBody("sedan");
-    details.setEngine("3.6L V6");
-    details.setFuelType("Gasoline");
-    details.setModelYear(2018);
-    details.setProductionYear(2018);
-    details.setNumberOfDoors(4);
-    car.setDetails(details);
-
-    Manufacturer manufacturer = new Manufacturer(101, "Chevrolet");
-    details.setManufacturer(manufacturer);
-    
-    return car;
-    
-  }
 }
