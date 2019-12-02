@@ -27,15 +27,15 @@ public class PriceClient {
   /**
    * Constructor for PriceClient.
    * 
-   * @param pricing {@link WebClient} - Injected by spring.
+   * @param pricingClient {@link WebClient} - Injected by spring.
    */
   public PriceClient(
-      @Qualifier(PriceClient.WEBCLIENT_PRICING) WebClient pricing               
+      @Qualifier(PriceClient.WEBCLIENT_PRICING) WebClient pricingClient               
   ) {
     // jok, @Qualifier actual not necessary, because parameter name equals name, 
     // but let be explicit in case of someone would change the bean name in 
     // VehiclesApiApplication
-    this.client = pricing;
+    this.client = pricingClient;
   }
 
   
