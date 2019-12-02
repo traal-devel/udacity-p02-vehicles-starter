@@ -1,24 +1,28 @@
 package ch.traal.pricing;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ch.traal.pricing.api.PricingController;
+import ch.traal.pricing.domain.price.Price;
 import ch.traal.pricing.service.PricingService;
 
 @RunWith(SpringRunner.class)
@@ -43,6 +47,12 @@ public class PricingControllerUnitTest {
 
   
   /* methods */
+  @Before
+  public void before() throws Exception {
+    Price price = new Price("USD", new BigDecimal("999.99"), 1L);
+    given(pricingService.getPrice(any())).willReturn(price);
+  }
+  
   @Test
   public void testNotNull() throws Exception {
     assertNotNull(this.pricingService);
