@@ -1,8 +1,6 @@
 package ch.traal.pricing.api;
 
-import ch.traal.pricing.domain.price.Price;
-import ch.traal.pricing.service.PriceException;
-import ch.traal.pricing.service.PricingService;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import ch.traal.pricing.domain.price.Price;
+import ch.traal.pricing.domain.price.PriceRepository;
+import ch.traal.pricing.service.PriceException;
+import ch.traal.pricing.service.PricingService;
+import ch.traal.pricing.util.PriceUtil;
 
 /**
  * Implements a REST-based controller for the pricing service.
@@ -25,9 +29,13 @@ public class PricingController {
   @Autowired
   private PricingService pricingService;
   
+  @Autowired
+  private PriceRepository priceRepository;
   
   /* constructors */
-  
+  public PricingController() {
+    super();
+  }
   
   /* methods */
   /**
@@ -48,4 +56,20 @@ public class PricingController {
                 HttpStatus.NOT_FOUND, "Price Not Found", ex);
     }
   }
+  
+  @GetMapping("/quote")
+  public ResponseEntity<Price> getQuoteForVehicleId(
+      @RequestParam Long vehicleId
+  ) {
+    BigDecimal randomPrice = PriceUtil.randomPrice();
+    Price price = new Price();
+    price.setCurrency("USD");
+    price.setVehicleId(vehicleId);
+    price.setPrice(randomPrice);
+    
+    this.priceRepository.save(price);
+    
+    return ResponseEntity.ok(price);
+  }
+  
 }
