@@ -12,6 +12,9 @@
   <name>vehicles-msa</name>
   <packaging>pom</packaging>
   <modules>
-  	<module>api</module>
+  	<module>vehicles-api</module>
+  	<module>pricing-service</module>
+  	<module>vehicles-eureka-server</module>
+  	<module>boogle-maps</module>
   </modules>
 </project>
