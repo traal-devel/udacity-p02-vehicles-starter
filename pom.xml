@@ -8,7 +8,7 @@
   </parent>
   <groupId>ch.traal.msa.vehicles</groupId>
   <artifactId>vehicles-msa</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.2.00.SNAPSHOT</version>
   <name>vehicles-msa</name>
   <packaging>pom</packaging>
   <modules>
