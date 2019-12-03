@@ -46,6 +46,7 @@ public class PriceClient {
   // do a request every time
   /**
    * Gets a vehicle price from the pricing client, given vehicle ID.
+   * 
    * @param vehicleId ID number of the vehicle for which to get the price
    * @return Currency and price of the requested vehicle,
    *   error message that the vehicle ID is invalid, or note that the
@@ -70,5 +71,49 @@ public class PriceClient {
       log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
     }
     return "(consult price)";
+  }
+  
+  /**
+   * Gets a quote for a given vehicle id
+   * 
+   * @param vehicleId vehicleId
+   * @return String
+   */
+  public String getQuote(Long vehicleId) {
+    try {
+      Price price = 
+          client
+              .get()
+              .uri(uriBuilder -> uriBuilder
+                      .path("services/price/quote")
+                      .queryParam("vehicleId", vehicleId)
+                      .build()
+              )
+              .retrieve()
+              .bodyToMono(Price.class)
+              .block();
+    
+      return String.format("%s %s", price.getCurrency(), price.getPrice());
+    } catch (Exception e) {
+      log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
+    }
+    return "(consult price)";
+  }
+  
+  public void removeQuote(Long vehicleId) {
+    try {
+      client
+          .delete()
+          .uri(uriBuilder -> uriBuilder
+                  .path("services/price/quote/" + vehicleId)
+                  .build()
+              )
+              .retrieve()
+              .bodyToMono(Void.class)
+              .subscribe()
+              ;
+    } catch (Exception ex) {
+      log.error("Unexpected error invoking removeQuote method with id: " + vehicleId, ex);
+    }
   }
 }
