@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import ch.traal.pricing.api.PricingController;
 import ch.traal.pricing.domain.price.Price;
+import ch.traal.pricing.domain.price.PriceRepository;
 import ch.traal.pricing.service.PricingService;
 
 @RunWith(SpringRunner.class)
@@ -39,6 +40,10 @@ public class PricingControllerUnitTest {
 
   @MockBean
   private PricingService pricingService;
+  
+  // :INFO: Used in PrcingController. Has to be mocked, else you receive an autowire exception
+  @MockBean
+  private PriceRepository priceRepository;
   
   /* constructors */
   public PricingControllerUnitTest() {
