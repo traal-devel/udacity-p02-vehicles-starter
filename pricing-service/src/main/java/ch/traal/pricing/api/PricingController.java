@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,11 +59,29 @@ public class PricingController {
     }
   }
   
+  /**
+   * For a vehcile id a quote can be requested. 
+   * <p>
+   * This quote is stored in the internal h2 database for later usage.
+   * </p>
+   * <p>
+   * Proof of Concept: Not authorization / authentication layer is implemented.
+   * Thus, any user of the interface can edit the data from someone else.
+   * </p>
+   * 
+   * @param vehicleId
+   * @return
+   */
   @GetMapping("/quote")
   public ResponseEntity<Price> getQuoteForVehicleId(
       @RequestParam Long vehicleId
   ) {
+    // :INFO: We simply get a ranom price. 
+    // But: With the vehicle ID, we could read the meta data of the
+    //      car and implement some business logic to calculate a price 
+    //      on the basis of the car attributes like year, model, color etc.
     BigDecimal randomPrice = PriceUtil.randomPrice();
+    
     Price price = new Price();
     price.setCurrency("USD");
     price.setVehicleId(vehicleId);
@@ -70,6 +90,16 @@ public class PricingController {
     this.priceRepository.save(price);
     
     return ResponseEntity.ok(price);
+  }
+  
+  @DeleteMapping("/quote/{vehicleId}")
+  public ResponseEntity<Price> deleteQuoteForVehicleId(
+      @PathVariable(name = "vehicleId", required = true) Long vehicleId
+  ) {
+    // Delete the quote
+    this.priceRepository.deleteByVehicleId(vehicleId);
+    
+    return ResponseEntity.noContent().build();
   }
   
 }
