@@ -12,6 +12,7 @@ import ch.traal.vehicles.client.prices.PriceClient;
 import ch.traal.vehicles.domain.Location;
 import ch.traal.vehicles.domain.car.Car;
 import ch.traal.vehicles.domain.car.CarRepository;
+import ch.traal.vehicles.service.ex.CarNotFoundException;
 
 /**
  * Implements the car service create, read, update or delete
@@ -100,7 +101,7 @@ public class CarService {
      * meaning the Maps service needs to be called each time for the address.
      */
     Location carLocation = car.getLocation();
-    Location mapLocation = this.webClientMaps.getAddress(carLocation);
+    Location mapLocation = this.webClientMaps.getCachedAddress(id, carLocation);
     car.setLocation(mapLocation);
 
     return car;
@@ -127,9 +128,8 @@ public class CarService {
     } else {
       carDB = repository.save(car);
       
-      // :INFO: Extension, If we save a new car to our database then we quote for 
-      // this vehicle-id a price.
-      
+      // :INFO: Extension, If we save a new car to our database then we get a 
+      // quote for this vehicle-id a price.
       String strPrice = this.webClientPricing.getQuote(carDB.getId());
       logger.info("Quoted price " + strPrice + " for vehiclie-id " + carDB.getId());
     }
@@ -148,9 +148,10 @@ public class CarService {
      *   If it does not exist, throw a CarNotFoundException
      */
     Car car = this.repository
-        .findById(id)
-        .orElseThrow(CarNotFoundException::new);
+                    .findById(id)
+                    .orElseThrow(CarNotFoundException::new);
     this.webClientPricing.removeQuote(id);
+    this.webClientMaps.invalidateCacheBy(id);
 
     /**
      * :DONE: Delete the car from the repository.
