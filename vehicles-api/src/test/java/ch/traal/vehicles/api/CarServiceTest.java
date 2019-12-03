@@ -8,6 +8,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,6 +24,7 @@ import ch.traal.vehicles.client.prices.PriceClient;
 import ch.traal.vehicles.domain.Location;
 import ch.traal.vehicles.domain.car.Car;
 import ch.traal.vehicles.domain.car.CarRepository;
+import ch.traal.vehicles.domain.order.OrderRepository;
 import ch.traal.vehicles.service.CarService;
 import ch.traal.vehicles.test.util.DomainUtil;
 import ch.traal.vehicles.test.util.StopOnFailureRunner;
@@ -44,6 +47,8 @@ public class CarServiceTest {
   /* constants */
   public static final String DUMMY_PRICE = "USD 9999";
   
+  public static final Logger logger = LogManager.getLogger(CarServiceTest.class);
+  
   
   /* class variables */
   private static Car s_tmpCar = null;
@@ -54,6 +59,9 @@ public class CarServiceTest {
   
   @Autowired
   private CarRepository   repository;
+  
+  @Autowired
+  private OrderRepository orderRepository;
   
   @MockBean
   private MapsClient      webClientMaps;
@@ -71,6 +79,7 @@ public class CarServiceTest {
   @BeforeClass
   public static void beforeClass() {
     s_tmpCar = DomainUtil.createCar(null);
+
   }
   
   @Before
@@ -78,7 +87,9 @@ public class CarServiceTest {
     Location loc = DomainUtil.createLocation(null, s_tmpCar.getLocation());
     
     given(this.webClientMaps.getAddress(any())).willReturn(loc);
+    given(this.webClientMaps.getCachedAddress(any(), any())).willReturn(loc);
     given(this.webClientPricing.getPrice(any())).willReturn(CarServiceTest.DUMMY_PRICE);
+    
     
     this.carService = new CarService(repository, webClientMaps, webClientPricing);
     
@@ -89,9 +100,14 @@ public class CarServiceTest {
     assertNotNull(this.carService);
   }
   
+  
   @Test
-  @TestOrder(order = 0)
+  @TestOrder(order = 5)
   public void testCreateCar() {
+    // Be aware that other JUnit Tests Suites can interfere with our junit
+    // tests methos in this class
+    this.orderRepository.deleteAll();
+    
     Car carResult = this.carService.save(s_tmpCar);
     
     this.checkCarEquals(s_tmpCar, carResult);
@@ -126,6 +142,7 @@ public class CarServiceTest {
   @Test
   @TestOrder(order = 30)
   public void testAddFiveCars() {
+    int carDbCount = this.carService.list().size();
     for(int i=0; i<5; i++) {
       s_tmpCar.setId(null);
       this.carService.save(s_tmpCar);
@@ -133,17 +150,18 @@ public class CarServiceTest {
     
     List<Car> carList = this.carService.list();
     assertNotNull(carList);
-    assertTrue(carList.size() == 6);
+    assertTrue(carList.size() == carDbCount + 5);
   }
   
   @Test
   @TestOrder(order = 40)
   public void testRemoveAllCars() {
     List<Car> carList = this.carService.list();
-    assertNotNull(carList);
     
-    for (Car car : carList) {
-      this.carService.delete(car.getId());
+    if (carList != null) {
+      for (Car car : carList) {
+        this.carService.delete(car.getId());
+      }
     }
     
     carList = this.carService.list();
