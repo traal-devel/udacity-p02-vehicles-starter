@@ -5,7 +5,7 @@
   <parent>
     <groupId>ch.traal.msa.vehicles</groupId>
     <artifactId>vehicles-msa</artifactId>
-    <version>0.3.00.SNAPSHOT</version>
+    <version>0.3.00-SNAPSHOT</version>
   </parent>
 	<groupId>ch.traal.udacity-p02-vehicle</groupId>
 	<artifactId>vehicles-eureka-server</artifactId>
