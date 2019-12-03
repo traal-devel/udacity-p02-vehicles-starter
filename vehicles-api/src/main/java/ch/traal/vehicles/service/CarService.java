@@ -128,7 +128,7 @@ public class CarService {
       carDB = repository.save(car);
       
       // :INFO: Extension, If we save a new car to our database then we get a 
-      // quote for this vehicle-id a price.
+      // quote (random price) for this vehicle-id.
       String strPrice = this.webClientPricing.getQuote(carDB.getId());
       logger.info("Quoted price " + strPrice + " for vehiclie-id " + carDB.getId());
     }
