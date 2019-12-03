@@ -2,9 +2,12 @@ package ch.traal.vehicles.service;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import ch.traal.vehicles.client.maps.MapsClient;
+import ch.traal.vehicles.client.prices.Price;
 import ch.traal.vehicles.client.prices.PriceClient;
 import ch.traal.vehicles.domain.Location;
 import ch.traal.vehicles.domain.car.Car;
@@ -18,6 +21,10 @@ import ch.traal.vehicles.domain.car.CarRepository;
 @Service
 public class CarService {
 
+  
+  /* constants */
+  private static final Logger logger = LogManager.getLogger();
+  
   
   /* member variables */
   private final CarRepository   repository;
@@ -115,8 +122,16 @@ public class CarService {
                   carToBeUpdated.setLocation(car.getLocation());
                   return repository.save(carToBeUpdated);
               }).orElseThrow(CarNotFoundException::new);
+      
+      
     } else {
       carDB = repository.save(car);
+      
+      // :INFO: Extension, If we save a new car to our database then we quote for 
+      // this vehicle-id a price.
+      
+      String strPrice = this.webClientPricing.getQuote(carDB.getId());
+      logger.info("Quoted price " + strPrice + " for vehiclie-id " + carDB.getId());
     }
 
     return carDB;
@@ -135,6 +150,7 @@ public class CarService {
     Car car = this.repository
         .findById(id)
         .orElseThrow(CarNotFoundException::new);
+    this.webClientPricing.removeQuote(id);
 
     /**
      * :DONE: Delete the car from the repository.
