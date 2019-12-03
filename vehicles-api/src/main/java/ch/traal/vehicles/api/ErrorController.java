@@ -39,7 +39,8 @@ public class ErrorController extends ResponseEntityExceptionHandler {
         ex.getBindingResult()
             .getFieldErrors()
             .stream()
-            .map(error -> error.getField() + ": " + error.getDefaultMessage()
+            .map(
+              error -> error.getField() + ": " + error.getDefaultMessage()
             ).collect(Collectors.toList());
 
     ApiError apiError = new ApiError(DEFAULT_VALIDATION_FAILED_MESSAGE, errors);
