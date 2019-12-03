@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import ch.traal.vehicles.client.maps.MapsClient;
-import ch.traal.vehicles.client.prices.Price;
 import ch.traal.vehicles.client.prices.PriceClient;
 import ch.traal.vehicles.domain.Location;
 import ch.traal.vehicles.domain.car.Car;
