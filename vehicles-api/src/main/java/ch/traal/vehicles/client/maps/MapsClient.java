@@ -1,7 +1,9 @@
 package ch.traal.vehicles.client.maps;
 
+import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.collections4.map.PassiveExpiringMap;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,15 @@ public class MapsClient {
   public static final String WEBCLIENT_MAPS = "maps";
   private static final Logger log = LoggerFactory.getLogger(MapsClient.class);
 
+  /** Cache map to store vehicle-ids lat lon to a certain location */
+  private final static Map<Long, Location> CACHE_VEHICLE_ID_LOCATION 
+                    = new PassiveExpiringMap<Long,Location>(60 * 60 * 1000); 
+
   
   /* member variables */
   private final WebClient     client;
   private final ModelMapper   mapper;
+  
 
   
   /* constuctors */
@@ -67,5 +74,42 @@ public class MapsClient {
         log.warn("Map service is down");
         return location;
     }
+  }
+  
+  /**
+   * Gets the address for the given parameters.
+   * <p>
+   * If the vehicle-id, lat and lon value was queried before then the cached
+   * value is returned instead. 
+   * </p>
+   * <p>
+   * The cache item is stored for an hour.
+   * </p>
+   * 
+   * @param vehicleId Long - The vehiclie id of the car
+   * @param paramLocation - Location (lat, lon)
+   * @return Location - Location with address. 
+   */
+  public Location getCachedAddress(Long vehicleId, Location paramLocation) {
+    Location cacheLocation = MapsClient.CACHE_VEHICLE_ID_LOCATION.get(vehicleId);
+    Location retValue = null;
+    
+    if (cacheLocation != null && paramLocation != null 
+        && Objects.equals(cacheLocation.getLat(), paramLocation.getLat()) 
+        && Objects.equals(cacheLocation.getLon(), paramLocation.getLon())) {
+      retValue = cacheLocation;
+    } else {
+      retValue = this.getAddress(paramLocation); 
+      
+      if (retValue != null) {
+        MapsClient.CACHE_VEHICLE_ID_LOCATION.put(vehicleId, retValue);
+      }
+    }
+    
+    return retValue;
+  }
+  
+  public void invalidateCacheBy(Long vehicleId) {
+    MapsClient.CACHE_VEHICLE_ID_LOCATION.remove(vehicleId);
   }
 }
