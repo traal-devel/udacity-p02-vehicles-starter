@@ -42,7 +42,7 @@ public class CarServiceTest {
 
   
   /* constants */
-  private static final String DUMMY_PRICE = "USD 9999";
+  public static final String DUMMY_PRICE = "USD 9999";
   
   
   /* class variables */
@@ -164,27 +164,33 @@ public class CarServiceTest {
    */
   private void checkCarEquals(Car carLocal, Car carDB) {
     assertEquals(carLocal.getId(), carDB.getId());
-    assertEquals(carLocal.getLocation().getLat(), carDB.getLocation().getLat());
-    assertEquals(carLocal.getLocation().getLon(), carDB.getLocation().getLon());
-    assertEquals(carLocal.getDetails().getBody(), carDB.getDetails().getBody());
-    assertEquals(carLocal.getDetails().getEngine(), carDB.getDetails().getEngine());
-    assertEquals(carLocal.getDetails().getExternalColor(), carDB.getDetails().getExternalColor());
-    assertEquals(carLocal.getDetails().getFuelType(), carDB.getDetails().getFuelType());
-    assertEquals(carLocal.getDetails().getManufacturer().getCode(), carDB.getDetails().getManufacturer().getCode());
-    assertEquals(carLocal.getDetails().getManufacturer().getName(), carDB.getDetails().getManufacturer().getName());
-    assertEquals(carLocal.getDetails().getMileage(), carDB.getDetails().getMileage());
-    assertEquals(carLocal.getDetails().getModel(), carDB.getDetails().getModel());
-    assertEquals(carLocal.getDetails().getModelYear(), carDB.getDetails().getModelYear());
-    assertEquals(carLocal.getDetails().getNumberOfDoors(), carDB.getDetails().getNumberOfDoors());
+    if (carLocal.getLocation() != null && carDB.getLocation() != null) {
+      assertEquals(carLocal.getLocation().getLat(), carDB.getLocation().getLat());
+      assertEquals(carLocal.getLocation().getLon(), carDB.getLocation().getLon());
+    }
+    if (carLocal.getDetails() != null && carDB.getDetails() != null) {
+      assertEquals(carLocal.getDetails().getBody(), carDB.getDetails().getBody());
+      assertEquals(carLocal.getDetails().getEngine(), carDB.getDetails().getEngine());
+      assertEquals(carLocal.getDetails().getExternalColor(), carDB.getDetails().getExternalColor());
+      assertEquals(carLocal.getDetails().getFuelType(), carDB.getDetails().getFuelType());
+      assertEquals(carLocal.getDetails().getManufacturer().getCode(), carDB.getDetails().getManufacturer().getCode());
+      assertEquals(carLocal.getDetails().getManufacturer().getName(), carDB.getDetails().getManufacturer().getName());
+      assertEquals(carLocal.getDetails().getMileage(), carDB.getDetails().getMileage());
+      assertEquals(carLocal.getDetails().getModel(), carDB.getDetails().getModel());
+      assertEquals(carLocal.getDetails().getModelYear(), carDB.getDetails().getModelYear());
+      assertEquals(carLocal.getDetails().getNumberOfDoors(), carDB.getDetails().getNumberOfDoors());
+    }
   }
   
   private void checkLocactionEquals(Location locLocal, Location locDB) {
-    assertEquals(locLocal.getAddress(), locDB.getAddress());
-    assertEquals(locLocal.getCity(), locDB.getCity());
-    assertEquals(locLocal.getLat(), locDB.getLat());
-    assertEquals(locLocal.getLon(), locDB.getLon());
-    assertEquals(locLocal.getState(), locDB.getState());
-    assertEquals(locLocal.getZip(), locDB.getZip());
+    if (locLocal != null && locDB != null) {
+      assertEquals(locLocal.getAddress(), locDB.getAddress());
+      assertEquals(locLocal.getCity(), locDB.getCity());
+      assertEquals(locLocal.getLat(), locDB.getLat());
+      assertEquals(locLocal.getLon(), locDB.getLon());
+      assertEquals(locLocal.getState(), locDB.getState());
+      assertEquals(locLocal.getZip(), locDB.getZip());
+    }
   }
 
 }
